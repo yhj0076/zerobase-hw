@@ -1,0 +1,110 @@
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 5
+Server version: 11.4.5-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.001 sec)
+
+MariaDB [(none)]> use mysql;
+Database changed
+MariaDB [mysql]> select Host, User, Password from user;
++-----------+-------------+----------+
+| Host      | User        | Password |
++-----------+-------------+----------+
+| localhost | mariadb.sys |          |
+| localhost | root        |          |
+| king0wl   | root        |          |
+| 127.0.0.1 | root        |          |
+| ::1       | root        |          |
++-----------+-------------+----------+
+5 rows in set (0.002 sec)
+
+MariaDB [mysql]> create database db1;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [mysql]> create database db2;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [mysql]> drop database db1;
+Query OK, 0 rows affected (0.020 sec)
+
+MariaDB [mysql]> drop database db2;
+Query OK, 0 rows affected (0.003 sec)
+
+MariaDB [mysql]> create database db1;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [mysql]> create database db1;
+ERROR 1007 (HY000): Can't create database 'db1'; database exists
+MariaDB [mysql]> drop database db1;
+Query OK, 0 rows affected (0.006 sec)
+
+MariaDB [mysql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.000 sec)
+
+MariaDB [mysql]> select User, Host, Password from user;
++-------------+-----------+----------+
+| User        | Host      | Password |
++-------------+-----------+----------+
+| mariadb.sys | localhost |          |
+| root        | localhost |          |
+| root        | king0wl   |          |
+| root        | 127.0.0.1 |          |
+| root        | ::1       |          |
++-------------+-----------+----------+
+5 rows in set (0.001 sec)
+
+MariaDB [mysql]> create user 'testuser3'@'localhost' identified by 'zerobase';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [mysql]> select User, Host, Password from user;
++-------------+-----------+-------------------------------------------+
+| User        | Host      | Password                                  |
++-------------+-----------+-------------------------------------------+
+| mariadb.sys | localhost |                                           |
+| root        | localhost |                                           |
+| root        | king0wl   |                                           |
+| root        | 127.0.0.1 |                                           |
+| root        | ::1       |                                           |
+| testuser3   | localhost | *54CD1E3A9315150E5D35C734A348C8DF80049F9C |
++-------------+-----------+-------------------------------------------+
+6 rows in set (0.001 sec)
+
+MariaDB [mysql]> fuls privileafes;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'fuls privileafes' at line 1
+MariaDB [mysql]> fulsh privileafes;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'fulsh privileafes' at line 1
+MariaDB [mysql]> flush privileges;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [mysql]> create database db1;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [mysql]> grant all privileges on testdb1.* to 'testuser3'@'localhost' identified by 'zerobase';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [mysql]> flush privileges;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [mysql]>

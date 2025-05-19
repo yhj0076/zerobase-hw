@@ -29,4 +29,13 @@ public interface UserService {
      */
     ServiceResult removeInterestUser(String email, Long interestId);
 
+    /**
+     * 로그인정보 확인
+     */
+    User login(UserLogin userLogin);
+
+    /**
+     * 회원 가입
+     */
+    ServiceResult addUser(UserInput userInput);
 }

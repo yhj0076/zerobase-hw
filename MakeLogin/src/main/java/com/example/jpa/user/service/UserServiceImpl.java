@@ -1,17 +1,19 @@
 package com.example.jpa.user.service;
 
 import com.example.jpa.board.model.ServiceResult;
+import com.example.jpa.common.MailComponent;
+import com.example.jpa.common.exception.BizException;
+import com.example.jpa.logs.service.LogService;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.entity.UserInterest;
-import com.example.jpa.user.model.UserLogCount;
-import com.example.jpa.user.model.UserNoticeCount;
-import com.example.jpa.user.model.UserStatus;
-import com.example.jpa.user.model.UserSummary;
+import com.example.jpa.user.model.*;
 import com.example.jpa.user.repository.UserCustomRepository;
-import com.example.jpa.user.repository.*;
+import com.example.jpa.user.repository.UserInterestRepository;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.FieldError;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserCustomRepository userCustomRepository;
     private final UserInterestRepository userInterestRepository;
+
+    private final MailComponent mailComponent;
 
     @Override
     public UserSummary getUserStatusCount() {
@@ -63,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserLogCount> getUserLikeBest() {
+    public List<UserLogCount> getUserLikeBest(){
 
         return userCustomRepository.findUserLikeBest();
     }
@@ -88,7 +92,7 @@ public class UserServiceImpl implements UserService {
             return ServiceResult.fail(" 자기자신은 추가할 수 없습니다. ");
         }
 
-        if (userInterestRepository.countByUserAndInterestUser(user, interestUser) > 0) {
+        if (userInterestRepository.countByUserAndInterestUser(user, interestUser) > 0){
             return ServiceResult.fail("이미 관심사용자 목록에 추가하였습니다.");
         }
 
@@ -112,16 +116,70 @@ public class UserServiceImpl implements UserService {
         User user = optionalUser.get();
 
         Optional<UserInterest> optionalUserInterest = userInterestRepository.findById(interestId);
-        if (!optionalUserInterest.isPresent()) {
+        if (!optionalUserInterest.isPresent()){
             return ServiceResult.fail("삭제할 정보가 없습니다.");
         }
         UserInterest userInterest = optionalUserInterest.get();
 
-        if (userInterest.getUser().getId() != user.getId()) {
+        if(userInterest.getUser().getId() != user.getId()){
             return ServiceResult.fail("본인의 관심자 정보만 삭제할 수 있습니다.");
         }
 
         userInterestRepository.delete(userInterest);
+        return ServiceResult.success();
+    }
+
+
+    @Override
+    public User login(UserLogin userLogin) {
+
+        Optional<User> optionalUser = userRepository.findByEmail(userLogin.getEmail());
+        if (!optionalUser.isPresent()) {
+            throw new BizException("회원 정보가 존재하지 않습니다.");
+        }
+        User user = optionalUser.get();
+
+
+        if (!PasswordUtils.equalPassword(userLogin.getPassword(), user.getPassword())){
+            throw new BizException("일치하는 정보가 없습니다.");
+        }
+
+        return user;
+    }
+
+    @Override
+    public ServiceResult addUser(UserInput userInput) {
+
+        Optional<User> optionalUser = userRepository.findByEmail(userInput.getEmail());
+        if (optionalUser.isPresent()) {
+            throw new BizException("이미 가입된 이메일 입니다.");
+        }
+
+        String encryptPassword = PasswordUtils.encryptedPassword(userInput.getPassword());
+
+        User user = User.builder()
+                .email(userInput.getEmail())
+                .userName(userInput.getUserName())
+                .regDate(LocalDateTime.now())
+                .password(encryptPassword)
+                .phone(userInput.getPhone())
+                .status(UserStatus.Using)
+                .build();
+        userRepository.save(user);
+
+        //메일을 전송.
+
+        String fromEmail = "mapo.lib.02@gmail.com";
+        String fromName = "관리자";
+        String toEmail = user.getEmail();
+        String toName = user.getUserName();
+
+        String title = "회원가입을 축하드립니다.";
+        String contents = "회원가입을 축하드립니다.";
+
+        mailComponent.send(fromEmail, fromName, toEmail, toName, title, contents);
+
+
         return ServiceResult.success();
     }
 

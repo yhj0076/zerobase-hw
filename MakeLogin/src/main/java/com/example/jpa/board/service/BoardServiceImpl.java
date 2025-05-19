@@ -6,7 +6,10 @@ import com.example.jpa.board.repository.*;
 import com.example.jpa.common.exception.BizException;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.repository.UserRepository;
+import jdk.internal.joptsimple.internal.OptionNameMap;
+import jdk.vm.ci.meta.Local;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

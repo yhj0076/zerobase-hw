@@ -1,9 +1,11 @@
 package com.example.jpa.board.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.*;
 import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.exception.BizException;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.model.ResponseMessage;
@@ -14,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -245,6 +247,48 @@ public class ApiBoardController {
     }
 
 
+    /**
+     85. AOP의 Around를 이용하여 게시판 상세 조회에 대한 히스토리 기록하는 기능을 작성해 보세요.
+     */
+    @GetMapping("/api/board/{id}")
+    public ResponseEntity<?> detail(@PathVariable Long id){
+
+        Board board = null;
+        try {
+            board = boardService.detail(id);
+        } catch (BizException e) {
+            return ResponseResult.fail(e.getMessage());
+        }
+
+        return ResponseResult.success(board);
+    }
+
+    /**
+     92. 인터셉터을 이용하여 API요청에 대한 정보를 log에 기록하는 기능을 작성해 보세요.
+     - 글목록 API호출(/api/board)
+     */
+    @GetMapping("/api/board")
+    public ResponseEntity<?> list() {
+        List<Board> list = boardService.list();
+        return ResponseResult.success(list);
+    }
+
+
+    /**
+     93. 인터셉터을 활용하여 JWT 인증이 필요한 API에 대해서(글쓰기) 토큰 유효성을 검증하는 API를 작성해 보세요.
+     - 게시글쓰기 기능구현(/api/board)
+     - 글쓰기 API호출시 토큰 유효성 검사
+     */
+    @PostMapping("/api/board")
+    public ResponseEntity<?> add(
+            @RequestHeader("F-TOKEN") String token
+            , @RequestBody BoardInput boardInput) {
+
+        String email = JWTUtils.getIssuer(token);
+
+        ServiceResult result = boardService.add(email, boardInput);
+        return ResponseResult.result(result);
+    }
 
 
 

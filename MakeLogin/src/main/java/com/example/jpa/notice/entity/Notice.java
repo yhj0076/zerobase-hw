@@ -2,13 +2,14 @@ package com.example.jpa.notice.entity;
 
 
 import com.example.jpa.user.entity.User;
+import jdk.vm.ci.meta.Local;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 

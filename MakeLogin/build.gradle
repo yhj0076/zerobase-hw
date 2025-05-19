@@ -37,7 +37,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-
+	implementation 'org.springframework:spring-context-support'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'com.sun.mail:jakarta.mail:2.0.1'
 	implementation group: 'ch.simas.qlrm', name: 'qlrm', version: '1.7.1'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt

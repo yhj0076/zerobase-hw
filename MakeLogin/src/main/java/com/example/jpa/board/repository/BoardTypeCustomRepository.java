@@ -7,11 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Repository;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-
-import java.math.BigInteger;
-import java.sql.Timestamp;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,21 +25,24 @@ public class BoardTypeCustomRepository {
                 + ", (select count(*) from board b where b.board_type_id = bt.id) as board_count "
                 + " from board_type bt ";
 
+        // - X
+        //List<BoardTypeCount> list = entityManager.createNativeQuery(sql).getResultList();
+
+        /*
+        List<Object[]> result = entityManager.createNativeQuery(sql).getResultList();
+        List<BoardTypeCount> resultList = result.stream().map(e-> new BoardTypeCount(e))
+                .collect(Collectors.toList());
+
+         */
+
+
         Query nativeQuery = entityManager.createNativeQuery(sql);
+        JpaResultMapper jpaResultMapper = new JpaResultMapper();
+        List<BoardTypeCount> resultList = jpaResultMapper.list(nativeQuery, BoardTypeCount.class);
 
-        @SuppressWarnings("unchecked")
-        List<Object[]> results = nativeQuery.getResultList();
 
-        return results.stream()
-                .map(result -> new BoardTypeCount(
-                        (BigInteger) result[0],
-                        (String) result[1],
-                        (Timestamp) result[2],
-                        (Boolean) result[3],
-                        (BigInteger) result[4]
-                ))
-                .toList();
 
+        return resultList;
 
     }
 

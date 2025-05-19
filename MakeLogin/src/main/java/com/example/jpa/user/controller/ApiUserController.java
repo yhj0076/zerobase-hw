@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.example.jpa.board.entity.Board;
+import com.example.jpa.board.entity.BoardComment;
+import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.entity.Notice;
@@ -18,7 +20,7 @@ import com.example.jpa.user.exception.PasswordNotMatchException;
 import com.example.jpa.user.exception.UserNotFoundExcetpion;
 import com.example.jpa.user.model.*;
 import com.example.jpa.user.repository.UserRepository;
-import com.example.jpa.user.service.*;
+import com.example.jpa.user.service.PointService;
 import com.example.jpa.user.service.UserService;
 import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
@@ -31,8 +33,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -548,6 +550,52 @@ public class ApiUserController {
     }
 
 
+    /**
+     81. 내가 작성한 게시글의 코멘트 목록을 리턴하는 API를 작성해 보세요.
+     */
+    @GetMapping("/api/user/board/comment")
+    public ResponseEntity<?> myComments(@RequestHeader("F-TOKEN") String token) {
+
+        String email = "";
+        try {
+            email = JWTUtils.getIssuer(token);
+        } catch (SignatureVerificationException e) {
+            return ResponseResult.fail("토근 정보가 정확하지 않습니다.");
+        }
+
+        List<BoardComment> list = boardService.commentList(email);
+        return ResponseResult.success(list);
+    }
+
+
+    /**
+     82. 사용자의 포인트 정보를 만들고 게시글을 작성할 경우, 포인트를 누적하는 API를 작성해 보세요.
+     */
+    @PostMapping("/api/user/point")
+    public ResponseEntity<?> userPoint(@RequestHeader("F-TOKEN") String token
+        , @RequestBody UserPointInput userPointInput ) {
+
+        String email = "";
+        try {
+            email = JWTUtils.getIssuer(token);
+        } catch (SignatureVerificationException e) {
+            return ResponseResult.fail("토근 정보가 정확하지 않습니다.");
+        }
+
+        ServiceResult result = pointService.addPoint(email, userPointInput);
+        return ResponseResult.result(result);
+    }
+
+
+    /**
+     95. 회원가입시 가입된 회원에게 가입메일을 전송하는 API를 작성해 보세요.
+     */
+    @PostMapping("/api/public/user")
+    public ResponseEntity<?> addUser(@RequestBody UserInput userInput) {
+
+        ServiceResult result = userService.addUser(userInput);
+        return ResponseResult.result(result);
+    }
 
 
 

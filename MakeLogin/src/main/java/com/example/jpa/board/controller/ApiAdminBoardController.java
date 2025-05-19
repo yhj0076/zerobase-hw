@@ -15,9 +15,13 @@ import java.util.List;
 @RestController
 public class ApiAdminBoardController {
 
+
     private final BoardService boardService;
 
 
+    /**
+     74. 게시글의 신고하기 목록을 조회하는 API를 작성해 보세요.
+     */
     @GetMapping("/api/admin/board/badreport")
     public ResponseEntity<?> badReport() {
 

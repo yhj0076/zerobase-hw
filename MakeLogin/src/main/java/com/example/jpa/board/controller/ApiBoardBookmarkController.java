@@ -16,6 +16,9 @@ public class ApiBoardBookmarkController {
 
     private final BoardService boardService;
 
+    /**
+     77. 게시글의 북마크를 추가/삭제하는 API를 기능해 보세요.
+     */
     @PutMapping("/api/board/{id}/bookmark")
     public ResponseEntity<?> boardBookmark(@PathVariable Long id
         , @RequestHeader("F-TOKEN") String token ) {

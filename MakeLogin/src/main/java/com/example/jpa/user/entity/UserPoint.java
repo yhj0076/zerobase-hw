@@ -1,35 +1,33 @@
-package com.example.jpa.notice.entity;
+package com.example.jpa.user.entity;
 
-
-import com.example.jpa.user.entity.User;
+import com.example.jpa.user.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import java.lang.annotation.Native;
-import java.time.LocalDateTime;
 
-
-@Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoticeLike {
+@Entity
+public class UserPoint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn
     @ManyToOne
-    private Notice notice;
-
     @JoinColumn
-    @ManyToOne
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private UserPointType userPointType;
+
+    @Column
+    private int point;
 
 }

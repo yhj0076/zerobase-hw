@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+
+import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,14 +29,20 @@ public class BoardTypeCustomRepository {
                 + " from board_type bt ";
 
         Query nativeQuery = entityManager.createNativeQuery(sql);
+
+        @SuppressWarnings("unchecked")
         List<Object[]> results = nativeQuery.getResultList();
-        List<BoardTypeCount> resultList = results.stream()
-            .map(objects -> new BoardTypeCount(objects))
-            .collect(Collectors.toList());
 
+        return results.stream()
+                .map(result -> new BoardTypeCount(
+                        (BigInteger) result[0],
+                        (String) result[1],
+                        (Timestamp) result[2],
+                        (Boolean) result[3],
+                        (BigInteger) result[4]
+                ))
+                .toList();
 
-
-        return resultList;
 
     }
 

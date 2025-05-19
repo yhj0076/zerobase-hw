@@ -1,23 +1,19 @@
-package com.example.jpa.notice.entity;
+package com.example.jpa.user.entity;
 
-
-import com.example.jpa.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-
-@Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Notice {
+@Entity
+public class UserInterest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,27 +23,11 @@ public class Notice {
     @JoinColumn
     private User user;
 
-    @Column
-    private String title;
-
-    @Column
-    private String contents;
+    @ManyToOne
+    @JoinColumn
+    private User interestUser;
 
     @Column
     private LocalDateTime regDate;
 
-    @Column
-    private LocalDateTime updateDate;
-
-    @Column
-    private int hits;
-
-    @Column
-    private int likes;
-
-    @Column
-    private boolean deleted;
-
-    @Column
-    private LocalDateTime deletedDate;
 }

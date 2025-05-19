@@ -16,6 +16,10 @@ public class ApiBoardScrapController {
 
     private final BoardService boardService;
 
+
+    /**
+     75. 게시글의 스크랩을 추가하는 API를 기능해 보세요.
+     */
     @PutMapping("/api/board/{id}/scrap")
     public ResponseEntity<?> boardScrap(@PathVariable Long id
         , @RequestHeader("F-TOKEN") String token ) {
@@ -30,6 +34,10 @@ public class ApiBoardScrapController {
         return ResponseResult.result(boardService.scrap(id, email));
     }
 
+
+    /**
+     76. 게시글의 스크랩을 삭제하는 API를 기능해 보세요.
+     */
     @DeleteMapping("/api/scrap/{id}")
     public ResponseEntity<?> deleteBoardScrap(@PathVariable Long id
         , @RequestHeader("F-TOKEN") String token ) {

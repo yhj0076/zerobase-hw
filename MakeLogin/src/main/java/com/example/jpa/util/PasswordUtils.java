@@ -10,7 +10,20 @@ public class PasswordUtils {
     //입력한 패스워드를 해시된 패스워드랑 비교하는 함수
 
     public static boolean equalPassword(String password, String encryptedPassword) {
-        return BCrypt.checkpw(password, encryptedPassword);
+
+        System.out.println("[------------------------]");
+        System.out.println(password);
+
+        System.out.println( BCrypt.hashpw(password, BCrypt.gensalt()));
+
+        System.out.println(encryptedPassword);
+        System.out.println("[------------------------]");
+
+        try {
+            return BCrypt.checkpw(password, encryptedPassword);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
 }

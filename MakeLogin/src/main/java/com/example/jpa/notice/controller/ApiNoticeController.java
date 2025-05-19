@@ -29,10 +29,51 @@ public class ApiNoticeController {
     private final NoticeRepository noticeRepository;
 
 
+    /*
     @GetMapping("/api/notice")
     public String noticeString(){
         return "공지사항입니다.";
     }
+    */
+
+    /*
+    @GetMapping("/api/notice")
+    public NoticeModel notice() {
+
+        LocalDateTime regDate = LocalDateTime.of(2021, 2, 8, 0, 0);
+
+        NoticeModel notice = new NoticeModel();
+        notice.setId(1);
+        notice.setTitle("공지사항입니다.");
+        notice.setContents("공지사항 내용입니다.");
+        notice.setRegDate(regDate);
+
+        return notice;
+    }
+    */
+
+    /*
+    @GetMapping("/api/notice")
+    public List<NoticeModel> notice() {
+
+        List<NoticeModel> noticeList = new ArrayList<>();
+
+        noticeList.add(NoticeModel.builder()
+                .id(1)
+                .title("공지사항입니다.")
+                .contents("공지사항내용입니다.")
+                .regDate(LocalDateTime.of(2021, 1, 30, 0, 0))
+                .build());
+        noticeList.add(NoticeModel.builder()
+                .id(2)
+                .title("두번째 공지사항입니다.")
+                .contents("두번째 공지사항내용입니다.")
+                .regDate(LocalDateTime.of(2021, 1, 31, 0, 0))
+                .build());
+
+        return noticeList;
+    }
+    */
 
     @GetMapping("/api/notice")
     public List<NoticeModel> notice() {
@@ -47,6 +88,77 @@ public class ApiNoticeController {
         return 20;
     }
 
+
+    /*
+    @PostMapping("/api/notice")
+    public NoticeModel addNotice(@RequestParam String title, @RequestParam String contents) {
+
+        NoticeModel notice = NoticeModel.builder()
+                .id(1)
+                .title(title)
+                .contents(contents)
+                .regDate(LocalDateTime.now())
+                .build();
+
+        return notice;
+    }
+    */
+
+    /*
+    @PostMapping("/api/notice")
+    public NoticeModel addNotice(NoticeModel noticeModel) {
+
+        noticeModel.setId(2);
+        noticeModel.setRegDate(LocalDateTime.now());
+
+        return noticeModel;
+    }*/
+
+    /*
+    @PostMapping("/api/notice")
+    public NoticeModel addNotice(@RequestBody NoticeModel noticeModel) {
+
+        noticeModel.setId(3);
+        noticeModel.setRegDate(LocalDateTime.now());
+
+        return noticeModel;
+    }
+    */
+
+    /*
+    @PostMapping("/api/notice")
+    public Notice addNotice(@RequestBody NoticeInput noticeInput) {
+
+        Notice notice = Notice.builder()
+                .title(noticeInput.getTitle())
+                .contnets(noticeInput.getContents())
+                .regDate(LocalDateTime.now())
+                .build();
+
+        noticeRepository.save(notice);
+
+        return notice;
+    }
+    */
+
+    /*
+    @PostMapping("/api/notice")
+    public Notice addNotice(@RequestBody NoticeInput noticeInput) {
+
+        Notice notice = Notice.builder()
+                .title(noticeInput.getTitle())
+                .contents(noticeInput.getContents())
+                .regDate(LocalDateTime.now())
+                .hits(0)
+                .likes(0)
+                .build();
+
+        Notice resultNotice = noticeRepository.save(notice);
+
+        return resultNotice;
+    }
+    */
+
     @GetMapping("/api/notice/{id}")
     public Notice notice(@PathVariable Long id) {
 
@@ -58,10 +170,48 @@ public class ApiNoticeController {
         return null;
     }
 
+    /*
+    @PutMapping("/api/notice/{id}")
+    public void updateNotice(@PathVariable Long id
+            , @RequestBody NoticeInput noticeInput) {
+
+        Optional<Notice> notice = noticeRepository.findById(id);
+        if (notice.isPresent()) {
+            notice.get().setTitle(noticeInput.getTitle());
+            notice.get().setContents(noticeInput.getContents());
+            notice.get().setUpdateDate(LocalDateTime.now());
+            noticeRepository.save(notice.get());
+        }
+
+    }
+    */
+
     @ExceptionHandler(NoticeNotFundException.class)
     public ResponseEntity<String> handlerNoticeNotFundException(NoticeNotFundException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    /*
+    @PutMapping("/api/notice/{id}")
+    public void updateNotice(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
+
+        //Optional<Notice> notice = noticeRepository.findById(id);
+        //if (!notice.isPresent()) {
+            //예외 발생
+            throw new NoticeNotFundException("공지사항의 글이 존재하지 않습니다.");
+        //}
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NoticeNotFundException("공지사항의 글이 존재하지 않습니다."));
+
+        //공지사항 글이 있을때
+        notice.setTitle(noticeInput.getTitle());
+        notice.setContents(noticeInput.getContents());
+        notice.setUpdateDate(LocalDateTime.now());
+        noticeRepository.save(notice);
+    }
+    */
+
 
     @PutMapping("/api/notice/{id}")
     public void updateNotice(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
@@ -86,6 +236,30 @@ public class ApiNoticeController {
 
         noticeRepository.save(notice);
     }
+
+
+    /*
+    @DeleteMapping("/api/notice/{id}")
+    public void deleteNotice(@PathVariable Long id) {
+
+        Optional<Notice> notice = noticeRepository.findById(id);
+        if (notice.isPresent()) {
+            noticeRepository.delete(notice.get());
+        }
+    }
+    */
+
+
+    /*
+    @DeleteMapping("/api/notice/{id}")
+    public void deleteNotice(@PathVariable Long id) {
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NoticeNotFundException("공지사항의 글이 존재하지 않습니다."));
+
+        noticeRepository.delete(notice);
+    }
+    */
 
     @ExceptionHandler(AlreadyDeletedException.class)
     public ResponseEntity<String> handlerAlreadyDeletedException(AlreadyDeletedException exception) {
@@ -128,6 +302,81 @@ public class ApiNoticeController {
         noticeRepository.deleteAll();
 
     }
+
+
+    /*
+    @PostMapping("/api/notice")
+    public void addNotice(@RequestBody NoticeInput noticeInput) {
+
+        Notice notice = Notice.builder()
+                .title(noticeInput.getTitle())
+                .contents(noticeInput.getContents())
+                .hits(0)
+                .likes(0)
+                .regDate(LocalDateTime.now())
+                .build();
+
+        noticeRepository.save(notice);
+    }
+    */
+
+
+/*
+
+    @PostMapping("/api/notice")
+    public ResponseEntity<Object> addNotice(@RequestBody @Valid NoticeInput noticeInput
+            , Errors errors) {
+
+        if (errors.hasErrors()) {
+            List<ResponseError> responseErrors = new ArrayList<>();
+
+            errors.getAllErrors().stream().forEach(e-> {
+                responseErrors.add(ResponseError.of((FieldError)e));
+            });
+
+            return new ResponseEntity<>(responseErrors, HttpStatus.BAD_REQUEST);
+        }
+
+        noticeRepository.save(Notice.builder()
+                .title(noticeInput.getTitle())
+                .contents(noticeInput.getContents())
+                .hits(0)
+                .likes(0)
+                .regDate(LocalDateTime.now())
+                .build());
+
+        return ResponseEntity.ok().build();
+
+    }
+*/
+
+    /*
+    @PostMapping("/api/notice")
+    public ResponseEntity<Object> addNotice(@RequestBody @Valid NoticeInput noticeInput
+            , Errors errors) {
+
+        if (errors.hasErrors()) {
+            List<ResponseError> responseErrors = new ArrayList<>();
+
+            errors.getAllErrors().stream().forEach(e -> {
+                responseErrors.add(ResponseError.of((FieldError) e));
+            });
+
+            return new ResponseEntity<>(responseErrors, HttpStatus.BAD_REQUEST);
+        }
+
+        noticeRepository.save(Notice.builder()
+                .title(noticeInput.getTitle())
+                .contents(noticeInput.getContents())
+                .hits(0)
+                .likes(0)
+                .regDate(LocalDateTime.now())
+                .build());
+
+        return ResponseEntity.ok().build();
+
+    }
+    */
 
     @GetMapping("/api/notice/latest/{size}")
     public Page<Notice> noticeLatest(@PathVariable int size) {
